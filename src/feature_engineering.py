@@ -95,7 +95,6 @@ def encode_categorical_fast(df: pd.DataFrame) -> sparse.csr_matrix:
     X_num = df[NUMERIC_FEATURES].fillna(0).values.astype(np.float32)
     
     X_final = sparse.hstack([X_main, X_cross, X_num]).tocsr()
-    print(f"  > Encoded shape: {X_final.shape} in {time.time() - start_time:.2f}s")
     return X_final
 
 def run_feature_engineering():
@@ -103,7 +102,6 @@ def run_feature_engineering():
     from config import SPLIT_DATA_DIR, TRAIN_FILE, VAL_FILE, TEST_FILE
     
     for name, fname in [('train', TRAIN_FILE), ('val', VAL_FILE), ('test', TEST_FILE)]:
-        print(f"\nProcessing {name} set...")
         path = os.path.join(SPLIT_DATA_DIR, fname)
         if not os.path.exists(path): continue
         
