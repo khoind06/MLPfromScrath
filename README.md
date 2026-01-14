@@ -85,7 +85,7 @@ Cho thấy mô hình **generalize tốt**, không bị overfitting dù dữ li�
 
 ### Clone repository:
 ```
-git clone <repository_url>
+git clone https://github.com/khoind06/MLPfromScrath.git
 ```
 ### Cài đặt thư viện cần thiết:
 ```
