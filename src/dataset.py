@@ -5,8 +5,6 @@ from typing import Generator, Tuple
 import time
 
 class CTRDataset:
-    """Dataset class cho CTR prediction với sparse matrix"""
-    
     def __init__(self, X_path: str, y_path: str, name: str = "dataset"):
         self.name = name
         print(f"Loading {name}...")
@@ -28,7 +26,6 @@ class CTRDataset:
         return self.X.shape[0]
     
     def __getitem__(self, idx: int) -> Tuple[sp.csr_matrix, np.ndarray]:
-        """Lấy single sample"""
         return self.X[idx], self.y[idx]
     
     def batch_iterator(self, batch_size: int, shuffle: bool = True) -> Generator:
@@ -57,7 +54,6 @@ class CTRDataset:
             yield X_batch, y_batch
     
     def get_stats(self) -> dict:
-        """Trả về statistics của dataset"""
         return {
             "n_samples": len(self),
             "n_features": self.X.shape[1],
