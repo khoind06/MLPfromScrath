@@ -14,14 +14,14 @@ def get_lr(epoch):
     return LEARNING_RATE * (LR_DECAY_RATE ** (epoch - WARMUP_EPOCHS))
 
 def find_best_threshold(y_true, y_pred):
-    """Tìm threshold tối ưu cho F1"""
+    #Tìm threshold tối ưu cho F1
     precisions, recalls, thresholds = precision_recall_curve(y_true, y_pred)
     f1_scores = 2 * (precisions * recalls) / (precisions + recalls + 1e-10)
     best_idx = np.argmax(f1_scores)
     return thresholds[best_idx] if best_idx < len(thresholds) else 0.5, f1_scores[best_idx]
 
 def evaluate_model(model, dataset, batch_size, desc="Eval"):
-    """Đánh giá model trên dataset"""
+    #Đánh giá model trên dataset
     model.eval()
     all_preds, all_targets = [], []
     
@@ -48,14 +48,10 @@ def evaluate_model(model, dataset, batch_size, desc="Eval"):
     }
 
 def train():
-    print("=" * 60)
     print(f"TRAINING CONFIG")
-    print("=" * 60)
     print(f"Model: {HIDDEN_DIMS} | Proj: {PROJ_DIM} | Dropout: {DROPOUT_RATE}")
     print(f"Batch: {BATCH_SIZE} | LR: {LEARNING_RATE} | WD: {WEIGHT_DECAY}")
-    print(f"Early Stop: Patience={EARLY_STOPPING_PATIENCE}, Delta={EARLY_STOPPING_MIN_DELTA}")
-    print("=" * 60)
-    
+    print(f"Early Stop: Patience={EARLY_STOPPING_PATIENCE}, Delta={EARLY_STOPPING_MIN_DELTA}")    
     # 1. Load Data
     train_ds = CTRDataset(os.path.join(PROCESSED_DATA_DIR, "train_X.npz"),
                           os.path.join(PROCESSED_DATA_DIR, "train_y.npy"), "train")
@@ -110,19 +106,16 @@ def train():
             best_logloss = val_metrics['logloss']
             best_model_weights = copy.deepcopy(model)
             patience = 0
-            print(f"  ✓ New Best! (LogLoss: {best_logloss:.4f})")
+            print(f"   New Best! (LogLoss: {best_logloss:.4f})")
         else:
             patience += 1
             print(f"  → Patience: {patience}/{EARLY_STOPPING_PATIENCE}")
             if patience >= EARLY_STOPPING_PATIENCE:
-                print("\n⚠️  Early Stopping Triggered!")
+                print("\n  Early Stopping Triggered!")
                 break
     
     # 4. FINAL TEST EVALUATION
-    print("\n" + "=" * 60)
-    print("FINAL TEST EVALUATION")
-    print("=" * 60)
-    
+    print("FINAL TEST EVALUATION")    
     if best_model_weights:
         model = best_model_weights
         print("Using best model from training")
@@ -133,7 +126,7 @@ def train():
     test_metrics = evaluate_model(model, test_ds, BATCH_SIZE * 2, "Test")
     
     # Detailed Results
-    print(f"\n📊 Test Metrics:")
+    print(f"\n Test Metrics:")
     print(f"  AUC        : {test_metrics['auc']:.4f}")
     print(f"  LogLoss    : {test_metrics['logloss']:.4f}")
     print(f"  Best F1    : {test_metrics['f1']:.4f} (threshold: {test_metrics['threshold']:.3f})")
@@ -146,19 +139,19 @@ def train():
     precision = tp / (tp + fp) if (tp + fp) > 0 else 0
     recall = tp / (tp + fn) if (tp + fn) > 0 else 0
     
-    print(f"\n📈 Classification Report:")
+    print(f"\n Classification Report:")
     print(f"  Precision  : {precision:.4f} ({tp}/{tp + fp})")
     print(f"  Recall     : {recall:.4f} ({tp}/{tp + fn})")
     print(f"  Specificity: {tn/(tn+fp):.4f}")
     
-    print(f"\n🎯 Confusion Matrix:")
+    print(f"\n Confusion Matrix:")
     print(f"              Predicted")
     print(f"              Neg      Pos")
     print(f"  Actual Neg  {tn:<8} {fp:<8}")
     print(f"         Pos  {fn:<8} {tp:<8}")
     
     # Training Summary
-    print(f"\n📝 Training Summary:")
+    print(f"\n Training Summary:")
     print(f"  Best Val LogLoss: {best_logloss:.4f}")
     print(f"  Epochs Run  : {epoch}/{NUM_EPOCHS}")
     print(f"  Final Loss  : {avg_loss:.4f}")
@@ -167,10 +160,9 @@ def train():
     overfit_gap = val_metrics['auc'] - test_metrics['auc']  # Approximate using last val
     if abs(overfit_gap) > 0.02:
         if overfit_gap > 0:
-            print(f"\n⚠️  Warning: Possible overfitting (Val-Test gap: {overfit_gap:.4f})")
+            print(f"\nPossible overfitting (Val-Test gap: {overfit_gap:.4f})")
         else:
-            print(f"\n✓ Good generalization (Test AUC > Val AUC by {-overfit_gap:.4f})")
+            print(f"\n Good generalization (Test AUC > Val AUC by {-overfit_gap:.4f})")
     else:
-        print(f"\n✓ Good generalization (Val-Test gap: {overfit_gap:.4f})")
+        print(f"\n  Good generalization (Val-Test gap: {overfit_gap:.4f})")
     
-    print("=" * 60)
