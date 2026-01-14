@@ -18,15 +18,11 @@ from config import (
 )
 
 def split_data():
-    print("=" * 60)
     print("SPLITTING DATA")
-    print("=" * 60)
     print(f"Total samples: {NUM_SAMPLES:,}")
     print(f"Train ratio: {TRAIN_RATIO:.1%} (~{int(NUM_SAMPLES * TRAIN_RATIO):,})")
     print(f"Val ratio:   {VAL_RATIO:.1%} (~{int(NUM_SAMPLES * VAL_RATIO):,})")
-    print(f"Test ratio:  {TEST_RATIO:.1%} (~{int(NUM_SAMPLES * TEST_RATIO):,})")
-    print("=" * 60)
-    
+    print(f"Test ratio:  {TEST_RATIO:.1%} (~{int(NUM_SAMPLES * TEST_RATIO):,})")    
     # Set random seed
     random.seed(SEED)
     
@@ -87,7 +83,5 @@ def split_data():
     print(f"Test samples:  {counts['test']:,}")
     print(f"Total:         {sum(counts.values()):,}")
     print(f"\nFiles saved to: {SPLIT_DATA_DIR}")
-    print("=" * 60)
-
 if __name__ == "__main__":
     split_data()
